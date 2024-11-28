@@ -25,6 +25,10 @@
           env: {
             memory: hostModule.wasmMemory,
           },
+          null0: {
+            host_function_that_takes_string_param:
+              hostModule._host_function_that_takes_string_param,
+          },
         });
 
         // Test shared memory
@@ -43,6 +47,8 @@
         console.log("After host:", Array.from(buffer));
         cartInstance.exports.cartFunction(buffer.byteOffset, buffer.length);
         console.log("After cart:", Array.from(buffer));
+
+        cartInstance.exports.send_request_to_host();
       }
 
       init().catch(console.error);

@@ -57,4 +57,8 @@ clean:
 	rm -f $(HOST_OUTPUT) $(HOST_OUTPUT).map
 	rm -f $(CART_OUTPUT)
 
-.PHONY: all clean
+
+serve:
+	npx -y live-server docs
+
+.PHONY: all clean serve

@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+  <head>
+    <title>WASM Memory Sharing Test</title>
+  </head>
+  <body>
+    <script type="module">
+      import createHostModule from "./host.mjs";
+
+      async function init() {
+        // Load host module
+        const hostModule = await createHostModule();
+
+        // Load cart module
+        const cartWasm = await WebAssembly.compileStreaming(fetch("cart.wasm"));
+        const cartInstance = await WebAssembly.instantiate(cartWasm, {
+          env: {
+            memory: hostModule.wasmMemory,
+          },
+        });
+
+        // Test shared memory
+        const buffer = new Int32Array(hostModule.HEAP8.buffer, 0, 10);
+        for (let i = 0; i < buffer.length; i++) {
+          buffer[i] = i;
+        }
+
+        console.log("Initial:", Array.from(buffer));
+        hostModule.ccall(
+          "hostFunction",
+          null,
+          ["number", "number"],
+          [buffer.byteOffset, buffer.length],
+        );
+        console.log("After host:", Array.from(buffer));
+        cartInstance.exports.cartFunction(buffer.byteOffset, buffer.length);
+        console.log("After cart:", Array.from(buffer));
+      }
+
+      init().catch(console.error);
+    </script>
+  </body>
+</html>

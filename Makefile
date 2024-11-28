@@ -38,9 +38,6 @@ WASI_FLAGS = \
 	-Wl,--shared-memory \
 	-Wl,--max-memory=67108864
 
-# Debug flags for WASI (uncomment when debugging)
-#WASI_DEBUG_FLAGS = -g -dwarf-version=4
-
 # Default target
 all: $(HOST_OUTPUT) $(CART_OUTPUT)
 
@@ -54,8 +51,7 @@ $(CART_OUTPUT): $(CART_SOURCES)
 
 # Clean build files
 clean:
-	rm -f $(HOST_OUTPUT) $(HOST_OUTPUT).map
-	rm -f $(CART_OUTPUT)
+	rm -f $(HOST_OUTPUT) $(CART_OUTPUT)
 
 
 serve:

@@ -2,13 +2,14 @@
 EMCC = emcc
 WASI_CLANG = /opt/wasi-sdk/bin/clang
 
-# Output files
+HOST_SOURCES = host.c
 HOST_OUTPUT = docs/host.mjs
+
+CART_SOURCES = cart.c
 CART_OUTPUT = docs/cart.wasm
 
-# Source files
-HOST_SOURCES = host.c
-CART_SOURCES = cart.c
+CART2_SOURCES = cart2.ts
+CART2_OUTPUT = docs/cart2.wasm
 
 # Emscripten flags for host
 EMCC_FLAGS = \
@@ -39,7 +40,7 @@ WASI_FLAGS = \
 	-Wl,--max-memory=67108864
 
 # Default target
-all: $(HOST_OUTPUT) $(CART_OUTPUT)
+all: $(HOST_OUTPUT) $(CART_OUTPUT) $(CART2_OUTPUT)
 
 # Build host module
 $(HOST_OUTPUT): $(HOST_SOURCES)
@@ -51,10 +52,22 @@ $(CART_OUTPUT): $(CART_SOURCES)
 
 # Clean build files
 clean:
-	rm -f $(HOST_OUTPUT) $(CART_OUTPUT)
+	rm -f $(HOST_OUTPUT) $(CART_OUTPUT) $(CART2_OUTPUT)
 
 $(CART2_OUTPUT): $(CART2_SOURCES)
-	asc $(CART2_SOURCES) --config asconfig.cart.json
+	npx asc $(CART2_SOURCES) \
+    --importMemory \
+    --initialMemory 16 \
+    --maximumMemory 65536 \
+    --noExportMemory \
+    --sharedMemory \
+    --runtime stub \
+    --importTable \
+    --optimize \
+    --noAssert \
+    --enable threads \
+    --target release \
+    -o $(CART2_OUTPUT)
 
 serve:
 	npx -y live-server docs

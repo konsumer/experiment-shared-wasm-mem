@@ -1,17 +1,19 @@
 // Import the host function
 @external("null0", "host_function_that_takes_string_param")
-declare function host_function_that_takes_string_param(text: string): void;
+declare function host_function_that_takes_string_param(text: ArrayBuffer): void;
 
 // Export the cart function that modifies memory
 export function cartFunction(ptr: i32, length: i32): void {
-  const data = new Int32Array(length);
+  // Direct memory access using load/store
   for (let i = 0; i < length; i++) {
-    data[i] = load<i32>(ptr + i * 4) + 1;
-    store<i32>(ptr + i * 4, data[i]);
+    const offset = ptr + (i << 2); // multiply by 4 because Int32
+    const value = load<i32>(offset);
+    store<i32>(offset, value + 1);
   }
 }
 
 // Export the function that sends a string to host
 export function send_request_to_host(): void {
-  host_function_that_takes_string_param("Cool!");
+  // Create a string in shared memory
+  host_function_that_takes_string_param(String.UTF8.encode("Cool!", true));
 }

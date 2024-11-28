@@ -18,6 +18,7 @@
       async function init() {
         const hostModule = await createHostModule();
         const cartWasm = await WebAssembly.compileStreaming(fetch("cart.wasm"));
+        const cart2Wasm = await WebAssembly.compileStreaming(fetch("cart2.wasm"));
 
         // here I expost the host wasm function to the cart
         const cartModule = (
@@ -47,6 +48,21 @@
 
         // triggers cart to call host with a string (which shows it copied memory!)
         cartModule.send_request_to_host();
+
+        const cart2Module = (
+          await WebAssembly.instantiate(cart2Wasm, {
+            env: {
+              memory: hostModule.wasmMemory,
+              abort: (...a) => console.error(a)
+            },
+            null0: {
+              host_function_that_takes_string_param:
+                hostModule._host_function_that_takes_string_param,
+            },
+          })
+        ).exports;
+
+        cart2Module.send_request_to_host();
       }
 
       init().catch(console.error);

@@ -1,6 +1,6 @@
 # Compiler paths and tools
 EMCC = emcc
-WASI_CLANG = /opt/wasi-sdk/bin/clang++
+WASI_CLANG = /opt/wasi-sdk/bin/clang
 
 # Output files
 HOST_OUTPUT = docs/host.mjs
@@ -57,9 +57,4 @@ clean:
 	rm -f $(HOST_OUTPUT) $(HOST_OUTPUT).map
 	rm -f $(CART_OUTPUT)
 
-# Debug build (includes debug symbols and safety checks)
-debug: EMCC_DEBUG_FLAGS = -g4 -s ASSERTIONS=2 -s SAFE_HEAP=1
-debug: WASI_DEBUG_FLAGS = -g -dwarf-version=4
-debug: all
-
-.PHONY: all clean debug
+.PHONY: all clean

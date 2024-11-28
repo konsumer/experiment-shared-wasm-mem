@@ -53,6 +53,8 @@ $(CART_OUTPUT): $(CART_SOURCES)
 clean:
 	rm -f $(HOST_OUTPUT) $(CART_OUTPUT)
 
+$(CART2_OUTPUT): $(CART2_SOURCES)
+	asc $(CART2_SOURCES) --config asconfig.cart.json
 
 serve:
 	npx -y live-server docs

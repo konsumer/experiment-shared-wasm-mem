@@ -62,6 +62,9 @@
           })
         ).exports;
 
+        cart2Module.cartFunction(buffer.byteOffset, buffer.length);
+        console.log("After cart2:", Array.from(buffer));
+
         cart2Module.send_request_to_host();
       }
 

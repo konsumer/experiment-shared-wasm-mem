@@ -15,5 +15,5 @@ export function cartFunction(ptr: i32, length: i32): void {
 // Export the function that sends a string to host
 export function send_request_to_host(): void {
   // Create a string in shared memory
-  host_function_that_takes_string_param(String.UTF8.encode("Cool!", true));
+  host_function_that_takes_string_param(String.UTF8.encode("I am cart2!", true));
 }

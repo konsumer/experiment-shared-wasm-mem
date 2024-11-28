@@ -15,5 +15,5 @@ void cartFunction(int32_t* data, size_t length) {
 // this is called externally, in host, to test string
 __attribute__((export_name("send_request_to_host")))
 void send_request_to_host() {
-  host_function_that_takes_string_param("Cool!");
+  host_function_that_takes_string_param("I am cart1!");
 }
